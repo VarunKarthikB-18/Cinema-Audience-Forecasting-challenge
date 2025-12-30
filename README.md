@@ -1,23 +1,41 @@
-# As Cinema Audience Forecasting challenge
+# Cinema Audience Forecasting challenge
 
-This repository contains the Machine Learning project for the Cinema Audience Forecasting challenge.
+Project: Cinema Audience Forecasting challenge — exploratory analysis and baseline forecasting models for predicting audience counts.
 
-Files:
-- 23f2001305-notebook-t32025 - ML.ipynb — Jupyter notebook with the full analysis and models.
-- README.md — This file.
+Files in this repository
+- `23f2001305-notebook-t32025 - ML.ipynb` — Jupyter notebook with EDA, feature engineering and modeling.
+- `requirements.txt` — Python package requirements to run the notebook.
+- `.gitignore` — recommended ignores (virtualenvs, checkpoint files).
 
-Usage:
-1. Open the notebook in Jupyter Lab / Notebook:
+Quickstart (open the notebook locally)
+1. Create and activate a virtual environment (recommended):
 
-   jupyter lab
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-   or
+2. Start Jupyter Lab or Notebook and open the file:
 
-   jupyter notebook
+```bash
+jupyter lab
+# or
+jupyter notebook
+```
 
-2. Install required packages shown in the notebook (e.g., pandas, scikit-learn, matplotlib).
+Why the notebook might look non-editable
+- GitHub displays notebooks as static rendered files (read-only). To edit cells, open the notebook in a local Jupyter server (see Quickstart above) or use an online environment that supports notebooks (Binder, Colab, or GitHub Codespaces).
 
-Notes:
-- I attempted to create a remote GitHub repository and push. If `gh` (GitHub CLI) is not installed or you're not authenticated, please run `gh auth login` or create a repo manually and then `git remote add origin <repo-url>` followed by `git push -u origin main`.
+Optional: Open in Binder
+- Add a `binder` badge or create a `binder` configuration to run the notebook in the cloud without local setup.
 
-License: Add a license if desired.
+Notes & next steps
+- If you want, I can: add a LICENSE, convert the notebook to a clean `.py` script, create a Binder/Colab link, or extract runnable scripts from the notebook.
+
+License
+- Add a license file (e.g., `MIT`) if you want this project publicly reusable.
+
+Contact
+- Repo: https://github.com/VarunKarthikB-18/Cinema-Audience-Forecasting-challenge
+
