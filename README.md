@@ -1,144 +1,144 @@
+# 🎬 **Cinema Audience Forecasting Challenge — Machine Learning Model**
 
-🎬 Cinema Audience Forecasting Challenge — Machine Learning Model
+This project predicts the **daily audience count** for partnered theaters using real-world booking and theater metadata.  
+The aim is to support theaters with **demand forecasting**, **seat allocation optimization**, and **efficient scheduling**.
 
-This project predicts the daily audience count for partnered theaters using real-world booking and theater metadata. The goal is to support theaters with demand forecasting, seat allocation, and optimized scheduling.
+Dataset Source: _Kaggle — Cinema Audience Forecasting Challenge_ 🎥🍿
 
-The dataset comes from a Kaggle challenge: Cinema Audience Forecasting.
+---
 
-📌 Project Overview
+## 📌 **Project Overview**
 
-This solution combines multiple data sources including:
+Multiple datasets were combined to generate a single enriched training dataset:
 
-Dataset	Purpose	Size
-visits_df	Historical audience count	214,046 rows
-booking_df	Online booking transactions	68,336 rows
-cinepos_booking_df	Offline ticket sales	1,641,966 rows
-theaters_df & cinepos_theaters_df	Theater location & type metadata	829 + 4,690 rows
-date_df	Day-of-week calendar info	547 rows
+| Dataset | Purpose | Size |
+|--------|---------|------|
+| `visits_df` | Historical audience count | **214,046 rows** |
+| `booking_df` | Online booking transactions | **68,336 rows** |
+| `cinepos_booking_df` | Offline ticket sales | **1,641,966 rows** |
+| `theaters_df` + `cinepos_theaters_df` | Theater location & type metadata | **829 + 4,690 rows** |
+| `date_df` | Calendar (day-of-week) info | **547 rows** |
 
-This data was merged, aggregated, cleaned, and enriched with robust feature engineering, including:
+### ✨ Feature Engineering Highlights
+✔ Date-based features (month, week, day, quarter)  
+✔ Weekend & seasonal flags  
+✔ Online vs. offline demand indicators  
+✔ Theater/area performance statistics  
+✔ Ticket booking categories  
+✔ Encoded geographical & theater-type attributes  
 
-Date-based features (month, week, day, quarter)
+📊 **Final Training Data:**  
+➡ **214,046 samples** with **33 predictive features**
 
-Weekend, holiday & seasonal indicators
+---
 
-Online vs offline booking indicators
+## 📊 **Exploratory Data Insights**
 
-Theater/Aggregate audience statistics
+🔥 Major patterns observed:
 
-Ticket volume based categories
+- **Strong weekly seasonality** → viewer spikes on weekends  
+- **Blockbuster-driven surges** → extreme peaks in mid-Dec 2023 & New Year holidays  
+- **Evening peak** movie consumption: **18:00–21:00**  
+- **Massive online demand growth** post-November 2023  
+- **High concentration** of ticket sales among top theaters  
+- **Regional clusters** → location plays a big role  
 
-Encoded location and theater-type features
+📌 These insights were incorporated into the feature set for improved forecasting.
 
-Final training dataset: 214,046 samples & 33 features
+---
 
-📊 Exploratory Data Findings
+## 🧠 **Machine Learning Models & Performance**
 
-Key audience behavior insights:
+Three regression models were trained:
 
-Strong weekly seasonality → big jumps during weekends
+| Model | R² Score | MAE ↓ | Notes |
+|------|:--------:|:-----:|------|
+| Gradient Boosting | ~0.76 | — | Good baseline |
+| Random Forest | ~0.81 | — | Better generalization |
+| **Extra Trees Regressor** | **~0.85** | **Best** | Final selected model ✔ |
 
-Holiday release spikes → extreme peaks in mid-Dec 2023 & New Year
+🏆 **Final Model:** `ExtraTreesRegressor`  
+- `n_estimators = 120`  
+- `max_depth = 15`  
+- Trained with **parallel processing** (`n_jobs=-1`)  
+- **Time-aware** train/validation split (last 60 days reserved)
 
-Evening peak bookings: highest 18:00–21:00 period
+---
 
-Online bookings surged after Nov 2023 platform ramp-up
+## 🔍 **Key Feature Importance**
 
-Demand concentrated among top theaters and regions
+Top predictive signals:
+- Historical theater performance: **`theater_mean`, `area_mean`**
+- **Seasonality indicators**: weekend, months, quarters
+- Booking influence: **`tickets_booked`, `has_tickets`**
+- **Location-based encodings**
 
-Geographical clustering reveals deployment mainly within limited regional zones — helpful in adding location-driven demand signals.
+👉 Strong historical theater metrics = **high predictive power**
 
-🧠 Machine Learning Models Used
+---
 
-Three supervised regressors were trained and evaluated:
+## 📈 **Final Results & Submission Output**
 
-Model	R² Score (Validation)	MAE ↓
-Gradient Boosting	~0.76	—
-Random Forest	~0.81	—
-Extra Trees Regressor	Best (~0.85)	Lowest Error
+Predictions were clipped to prevent unrealistic values:
+- Minimum → **0**
+- Maximum → **300**
 
-Extra Trees performed best in:
-
-Capturing nonlinear patterns
-
-Seasonal-demand variance
-
-Feature-rich interactions
-
-📌 Selected Final Model: ExtraTreesRegressor
-
-120 trees
-
-max_depth = 15
-
-n_jobs = -1 for parallel execution
-
-Also applied:
-
-Standardization
-
-PCA (95% variance retention) for experimental model path
-
-Time-based train-validation split (last 60 days reserved)
-
-🔍 Feature Importance
-
-Top drivers of audience demand:
-
-Historically observed theater_mean, area_mean
-
-Seasonal + weekday features
-
-Booking-based indicators (tickets_booked, has_tickets)
-
-Theater category encodings
-
-This indicates local performance history is highly predictive of future turnout.
-
-📈 Final Results
-
-Predictions were constrained:
-
-≥ 0 (no negative audience)
-
-≤ 300 (avoid impossible extreme outputs)
-
-Submission file generated:
-
+📄 Submission File Generated:
 submission.csv
-38062 predictions
-All values valid
+38,062 predictions
+All values valid (no negatives)
 
+yaml
+Copy code
 
-Example:
+Example rows:
 
-ID	Predicted Audience
-book_00001_2024-03-01	27
-book_00001_2024-03-02	39
-book_00001_2024-03-03	41
-🧩 Tech Stack
-Component	Technology
-Language	Python
-Notebook Runtime	Kaggle
-ML Libraries	scikit-learn, pandas, numpy, seaborn, matplotlib
-Time-Series Analysis	statsmodels
-🚀 Future Improvements
+| ID | Audience Prediction |
+|---|---:|
+| book_00001_2024-03-01 | 27 |
+| book_00001_2024-03-02 | 39 |
+| book_00001_2024-03-03 | 41 |
 
-Add movie metadata (genre, cast, language) — currently missing from test data
+---
 
-Holiday/event schedule integration for finer spikes
+## 🧩 **Tech Stack**
 
-Ensemble stacking with tuned GBM + Extra Trees
+| Component | Technology |
+|----------|------------|
+| Language | Python |
+| Environment | Kaggle Notebook |
+| ML / Data | Scikit-learn, Pandas, NumPy |
+| Visualization | Matplotlib, Seaborn |
+| Time-Series | Statsmodels |
 
-Experiment with Deep Learning (Temporal CNNs, LSTMs)
+---
 
-📁 Repository Files
+## 🚀 **Future Enhancements**
+
+🔹 Incorporate **movie metadata** (genre, cast, languages)  
+🔹 🎉 Add **holiday / festival / event features** for high-spike accuracy  
+🔹 Ensemble stacking with **GBM + Extra Trees**  
+🔹 Deep Learning approaches (📡 **LSTMs / Temporal CNNs**)  
+
+---
+
+## 📁 **Repository Structure**
+
 📦 Cinema-Audience-Forecasting
- ├── 23f2001305-notebook-t3.ipynb
- ├── submission.csv
- ├── README.md   👈 (This document)
+├── 23f2001305-notebook-t3.ipynb
+├── submission.csv
+├── README.md
 
-👤 Author
+yaml
+Copy code
 
-B. Varun Karthik
-Machine Learning & Engineering
+---
+
+## 👤 **Author**
+
+**B. Varun Karthik**  
+_Machine Learning & Engineering_
+
+---
+
+✨ *If you like this project, don’t forget to ⭐ the repository!*  
