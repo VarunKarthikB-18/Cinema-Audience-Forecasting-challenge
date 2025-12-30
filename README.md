@@ -122,18 +122,6 @@ Example rows:
 
 ---
 
-## 📁 **Repository Structure**
-
-📦 Cinema-Audience-Forecasting
-├── 23f2001305-notebook-t3.ipynb
-├── submission.csv
-├── README.md
-
-yaml
-Copy code
-
----
-
 ## 👤 **Author**
 
 **B. Varun Karthik**  
