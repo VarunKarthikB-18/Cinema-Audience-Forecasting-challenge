@@ -1,4 +1,3 @@
-🔥
 
 🎬 Cinema Audience Forecasting Challenge — Machine Learning Model
 
