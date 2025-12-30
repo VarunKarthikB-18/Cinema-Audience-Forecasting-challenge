@@ -1,92 +1,145 @@
-# Cinema Audience Forecasting challenge
+🔥
 
-This repository contains a Jupyter notebook implementing an end-to-end baseline pipeline for predicting cinema audience counts from booking and point-of-sale (CinePOS) datasets.
+🎬 Cinema Audience Forecasting Challenge — Machine Learning Model
 
-Overview
-- Objective: build reproducible baselines to forecast audience counts per show/date using available logs and theater metadata. The notebook documents data exploration, cleaning, feature engineering, baseline modeling, and evaluation.
-- Notebook: `23f2001305-notebook-t32025 - ML.ipynb` (open in Jupyter to run and edit).
+This project predicts the daily audience count for partnered theaters using real-world booking and theater metadata. The goal is to support theaters with demand forecasting, seat allocation, and optimized scheduling.
 
-Data
-- The analysis uses multiple CSV inputs (booking logs, visits, theaters, CinePOS bookings). These are merged to create a modeling table with temporal features (date, month, week, dayofweek, hour), theater features, and booking aggregates.
+The dataset comes from a Kaggle challenge: Cinema Audience Forecasting.
 
-Key findings (summary)
-- Strong weekly seasonality: clear weekend peaks versus weekday troughs.
-- Time-of-day concentration: bookings and sales concentrate in evening hours (≈17:00–22:00).
-- Demand concentration: a short list of theaters account for a large portion of volume, making theater-level aggregates predictive.
+📌 Project Overview
 
-Modeling approach
-- Baseline models demonstrated: tree-based regressors (e.g., GradientBoostingRegressor, ExtraTreesRegressor).
-- Preprocessing: simple scaling and handling of missing theater/booking fields.
-- Evaluation metric used in the notebook: Mean Absolute Error (MAE).
+This solution combines multiple data sources including:
 
-How to run locally
-1. Create and activate a Python virtual environment (recommended):
+Dataset	Purpose	Size
+visits_df	Historical audience count	214,046 rows
+booking_df	Online booking transactions	68,336 rows
+cinepos_booking_df	Offline ticket sales	1,641,966 rows
+theaters_df & cinepos_theaters_df	Theater location & type metadata	829 + 4,690 rows
+date_df	Day-of-week calendar info	547 rows
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+This data was merged, aggregated, cleaned, and enriched with robust feature engineering, including:
 
-2. Launch Jupyter Lab / Notebook and open the notebook:
+Date-based features (month, week, day, quarter)
 
-```bash
-jupyter lab
-# or
-jupyter notebook
-```
+Weekend, holiday & seasonal indicators
 
-Why the notebook may appear non-editable on GitHub
-- GitHub renders notebooks as static pages by default. To edit the notebook interactively, open it in a local Jupyter server or use an online platform that supports notebooks (Binder, Colab, Codespaces).
+Online vs offline booking indicators
 
-Options I can implement next (pick one)
-- Add a Binder badge and minimal `environment.yml` or `requirements.txt` to run the notebook in Binder.
-- Create a Colab-ready copy (upload to Colab) and add a shareable link.
-- Extract the notebook into a clean Python script (`scripts/train.py`) with a small CLI to reproduce preprocessing and training.
-- Add a `LICENSE` file (MIT recommended) if you want the repo publicly reusable.
+Theater/Aggregate audience statistics
 
-Contact
-- Repo: https://github.com/VarunKarthikB-18/Cinema-Audience-Forecasting-challenge
+Ticket volume based categories
 
-If you'd like, I will now add a Binder configuration and badge so you can open and edit the notebook in the browser. Tell me to proceed or pick a different next step from the list above.
-# Cinema Audience Forecasting challenge
+Encoded location and theater-type features
 
-Project: Cinema Audience Forecasting challenge — exploratory analysis and baseline forecasting models for predicting audience counts.
+Final training dataset: 214,046 samples & 33 features
 
-Files in this repository
-- `23f2001305-notebook-t32025 - ML.ipynb` — Jupyter notebook with EDA, feature engineering and modeling.
-- `requirements.txt` — Python package requirements to run the notebook.
-- `.gitignore` — recommended ignores (virtualenvs, checkpoint files).
+📊 Exploratory Data Findings
 
-Quickstart (open the notebook locally)
-1. Create and activate a virtual environment (recommended):
+Key audience behavior insights:
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+Strong weekly seasonality → big jumps during weekends
 
-2. Start Jupyter Lab or Notebook and open the file:
+Holiday release spikes → extreme peaks in mid-Dec 2023 & New Year
 
-```bash
-jupyter lab
-# or
-jupyter notebook
-```
+Evening peak bookings: highest 18:00–21:00 period
 
-Why the notebook might look non-editable
-- GitHub displays notebooks as static rendered files (read-only). To edit cells, open the notebook in a local Jupyter server (see Quickstart above) or use an online environment that supports notebooks (Binder, Colab, or GitHub Codespaces).
+Online bookings surged after Nov 2023 platform ramp-up
 
-Optional: Open in Binder
-- Add a `binder` badge or create a `binder` configuration to run the notebook in the cloud without local setup.
+Demand concentrated among top theaters and regions
 
-Notes & next steps
-- If you want, I can: add a LICENSE, convert the notebook to a clean `.py` script, create a Binder/Colab link, or extract runnable scripts from the notebook.
+Geographical clustering reveals deployment mainly within limited regional zones — helpful in adding location-driven demand signals.
 
-License
-- Add a license file (e.g., `MIT`) if you want this project publicly reusable.
+🧠 Machine Learning Models Used
 
-Contact
-- Repo: https://github.com/VarunKarthikB-18/Cinema-Audience-Forecasting-challenge
+Three supervised regressors were trained and evaluated:
 
+Model	R² Score (Validation)	MAE ↓
+Gradient Boosting	~0.76	—
+Random Forest	~0.81	—
+Extra Trees Regressor	Best (~0.85)	Lowest Error
+
+Extra Trees performed best in:
+
+Capturing nonlinear patterns
+
+Seasonal-demand variance
+
+Feature-rich interactions
+
+📌 Selected Final Model: ExtraTreesRegressor
+
+120 trees
+
+max_depth = 15
+
+n_jobs = -1 for parallel execution
+
+Also applied:
+
+Standardization
+
+PCA (95% variance retention) for experimental model path
+
+Time-based train-validation split (last 60 days reserved)
+
+🔍 Feature Importance
+
+Top drivers of audience demand:
+
+Historically observed theater_mean, area_mean
+
+Seasonal + weekday features
+
+Booking-based indicators (tickets_booked, has_tickets)
+
+Theater category encodings
+
+This indicates local performance history is highly predictive of future turnout.
+
+📈 Final Results
+
+Predictions were constrained:
+
+≥ 0 (no negative audience)
+
+≤ 300 (avoid impossible extreme outputs)
+
+Submission file generated:
+
+submission.csv
+38062 predictions
+All values valid
+
+
+Example:
+
+ID	Predicted Audience
+book_00001_2024-03-01	27
+book_00001_2024-03-02	39
+book_00001_2024-03-03	41
+🧩 Tech Stack
+Component	Technology
+Language	Python
+Notebook Runtime	Kaggle
+ML Libraries	scikit-learn, pandas, numpy, seaborn, matplotlib
+Time-Series Analysis	statsmodels
+🚀 Future Improvements
+
+Add movie metadata (genre, cast, language) — currently missing from test data
+
+Holiday/event schedule integration for finer spikes
+
+Ensemble stacking with tuned GBM + Extra Trees
+
+Experiment with Deep Learning (Temporal CNNs, LSTMs)
+
+📁 Repository Files
+📦 Cinema-Audience-Forecasting
+ ├── 23f2001305-notebook-t3.ipynb
+ ├── submission.csv
+ ├── README.md   👈 (This document)
+
+👤 Author
+
+B. Varun Karthik
+Machine Learning & Engineering
